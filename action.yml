@@ -1,6 +1,6 @@
-name: 'Simple Teams Webhook Message'
+name: 'Complicated Webhook Message'
 description: 'Post a message with optional image and extra text blocks into a Teams channel using workflows'
-author: 'Tim Lolkema'
+author: 'hoonga'
 branding:
   icon: 'message-square'
   color: 'blue'
@@ -15,13 +15,11 @@ inputs:
   webhook:
     description: 'Webhook URL for the Teams channel'
     required: true
-  image_url:
-    description: 'URL of the image to include in the message (optional)'
-    required: false
-  extra_text_blocks:
-    description: 'Additional text blocks to include in the message, separated by ||| (optional)'
-    required: false
+  status:
+    description: ''
 
+# Check https://adaptivecards.io/designer/ for making templates
+# Also check https://amdesigner.azurewebsites.net/ for more examples
 runs:
   using: "composite"
   steps:
@@ -31,79 +29,6 @@ runs:
         TEAMS_WEBHOOK: ${{ inputs.webhook }}
       run: |
 
-        # Construct the content based on whether an image is provided
-        if [ ! -z "${{ inputs.image_url }}" ]; then
-          MAIN_CONTENT=$(cat << EOF
-          {
-            "type": "ColumnSet",
-            "columns": [
-              {
-                "type": "Column",
-                "width": "auto",
-                "items": [
-                  {
-                    "type": "Image",
-                    "url": "${{ inputs.image_url }}",
-                    "size": "Medium",
-                    "style": "Person"
-                  }
-                ]
-              },
-              {
-                "type": "Column",
-                "width": "stretch",
-                "items": [
-                  {
-                    "type": "TextBlock",
-                    "size": "Large",
-                    "weight": "Bolder",
-                    "text": "${{ inputs.message_title }}",
-                    "wrap": true
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "${{ inputs.message_description }}",
-                    "wrap": true
-                  }
-                ]
-              }
-            ]
-          }
-        EOF
-        )
-        else
-          MAIN_CONTENT=$(cat << EOF
-          {
-            "type": "TextBlock",
-            "size": "Large",
-            "weight": "Bolder",
-            "text": "${{ inputs.message_title }}",
-            "wrap": true
-          },
-          {
-            "type": "TextBlock",
-            "text": "${{ inputs.message_description }}",
-            "wrap": true
-          }
-        EOF
-        )
-        fi
-
-        # Construct extra text blocks if provided
-        EXTRA_TEXT_BLOCKS=""
-        IFS='|||' read -ra BLOCKS <<< "${{ inputs.extra_text_blocks }}"
-        for BLOCK in "${BLOCKS[@]}"; do
-          EXTRA_TEXT_BLOCKS+=$(cat << EOF
-          ,
-          {
-            "type": "TextBlock",
-            "text": "${BLOCK}",
-            "wrap": true
-          }
-        EOF
-        )
-        done
-
         CARD_JSON=$(cat << EOF
         {
           "type": "message",
@@ -112,20 +37,72 @@ runs:
               "contentType": "application/vnd.microsoft.card.adaptive",
               "contentUrl": null,
               "content": {
-                "type": "AdaptiveCard",
-                "body": [
-                  ${MAIN_CONTENT}
-                  ${EXTRA_TEXT_BLOCKS}
-                ],
-                "actions": [
-                  {
-                    "type": "Action.OpenUrl",
-                    "title": "CI-run",
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                ],
-                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                "version": "1.2"
+                  "type": "AdaptiveCard",
+                  "body": [
+                      {
+                          "type": "Container",
+                          "items": [
+                              {
+                                  "type": "TextBlock",
+                                  "text": "${{inputs.title}}",
+                                  "wrap": true,
+                                  "style": "heading"
+                              }
+                          ],
+                          "bleed": true,
+                          "separator": true,
+                          "style": "good"
+                      },
+                      {
+                          "type": "Container",
+                          "padding": "Default",
+                          "spacing": "None",
+                          "items": [
+                              {
+                                  "type": "TextBlock",
+                                  "text": "${{inputs.detail}}",
+                                  "wrap": true,
+                                  "weight": "Bolder",
+                                  "size": "Large",
+                                  "style": "heading"
+                              },
+                              {
+                                  "type": "TextBlock",
+                                  "text": "commit message",
+                                  "wrap": true
+                              },
+                              {
+                                  "type": "ActionSet",
+                                  "id": "c8a5ba7e-7ec6-53ae-79da-0cfb952a527e",
+                                  "actions": [
+                                      {
+                                          "type": "Action.OpenUrl",
+                                          "title": "개발사항",
+                                          "tooltip": "개발사항",
+                                          "iconUrl": "http",
+                                          "url": "https://github.com"
+                                      },
+                                      {
+                                          "type": "Action.OpenUrl",
+                                          "title": "코드 변경 내역",
+                                          "tooltip": "코드 변경 내역",
+                                          "iconUrl": "http",
+                                          "url": "https://github.com"
+                                      },
+                                      {
+                                          "type": "Action.OpenUrl",
+                                          "title": "Workflow 확인",
+                                          "tooltip": "Workflow 확인",
+                                          "iconUrl": "http",
+                                          "url": "https://github.com"
+                                      }
+                                  ]
+                              }
+                          ]
+                      }
+                  ],
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "version": "1.5"
               }
             }
           ]

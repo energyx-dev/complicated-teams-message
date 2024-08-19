@@ -1,0 +1,91 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "${input.title}",
+                    "wrap": true,
+                    "style": "heading"
+                }
+            ],
+            "bleed": true,
+            "separator": true,
+            "style": "good"
+        },
+        {
+            "type": "Container",
+            "padding": "Default",
+            "spacing": "None",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "${input.detail}",
+                    "wrap": true,
+                    "weight": "Bolder",
+                    "size": "Large",
+                    "style": "heading"
+                },
+                {
+                    "type": "TextBlock",
+                    "text": "commit message",
+                    "wrap": true
+                },
+                {
+                    "type": "ActionSet",
+                    "id": "c8a5ba7e-7ec6-53ae-79da-0cfb952a527e",
+                    "actions": [
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "개발사항",
+                            "tooltip": "개발사항",
+                            "iconUrl": "http",
+                            "url": "https://github.com"
+                        },
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "코드 변경 내역",
+                            "tooltip": "코드 변경 내역",
+                            "iconUrl": "http",
+                            "url": "https://github.com"
+                        },
+                        {
+                            "type": "Action.OpenUrl",
+                            "title": "Workflow 확인",
+                            "tooltip": "Workflow 확인",
+                            "iconUrl": "http",
+                            "url": "https://github.com"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "id": "77102c5d-fde2-e573-4ea5-66022d646d64",
+            "padding": {
+                "top": "Small",
+                "bottom": "Small",
+                "left": "Small",
+                "right": "Default"
+            },
+            "spacing": "None",
+            "separator": true,
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "id": "42654e7e-cece-b419-867a-3e3ef4076870",
+                    "text": "[View in portal](https://amdesigner.azurewebsites.net)",
+                    "wrap": true,
+                    "color": "Accent",
+                    "horizontalAlignment": "Right"
+                }
+            ],
+            "horizontalAlignment": "Right"
+        }
+    ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.5"
+}
