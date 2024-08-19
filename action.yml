@@ -6,11 +6,11 @@ branding:
   color: 'blue'
 
 inputs:
-  message_title:
+  title:
     description: 'Title of the message'
     required: true
-  message_description:
-    description: 'Description of the message'
+  detail:
+    description: 'Detail of the message'
     required: true
   webhook:
     description: 'Webhook URL for the Teams channel'
